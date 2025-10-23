@@ -1,0 +1,1 @@
+The model is the first module in Dearning and this model is the standard module for creating AI models.
