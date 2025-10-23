@@ -1,1 +1,79 @@
-The model is the first module in Dearning and this model is the standard module for creating AI models.
+The model module provides a pure Python-based artificial neural network (AI) modeling system.
+The structure is modular and lightweight, but still supports modern features such as:
+* `Dense` layers (fully connected)
+* Activation functions (`ReLU`, `Sigmoid`, `Tanh`)
+* `Dropout` layers
+* Manual backpropagation
+* Saving and loading models (`save_model` and `load_model`)
+* Additional neuron types (Memory, Attention, NALU, Mixture of Experts, Graph, etc.)
+
+## 2. Basic Model Structure
+```python
+from dearning import CustomAIModel, Dense, Activation
+
+# Creating a new model
+model = CustomAIModel(loss="mse")
+
+# Adding Dense and Activation layers
+model.add(Dense(4, 8)) # Layer input=4, output=8
+model.add(Activation("relu")) # ReLU activation function
+model.add(Dense(8, 1)) # Layer Output
+
+## 3. Model Training
+```python
+# Example Data
+X = [[0.1, 0.2, 0.3, 0.4],
+[0.4, 0.3, 0.2, 0.1]]
+y = [[0.5], [0.2]]
+
+# Train the model for 10 epochs
+model.train(X, y, epochs=10, learning_rate=0.01)
+
+Output:
+Epoch 1/10, Loss: 0.1342
+Epoch 2/10, Loss: 0.1208
+
+## 4. Saving and Loading the Model
+```python
+model.save_model("mymodel")
+loaded = CustomAIModel.load_model("mymodel")
+
+A saved model produces two files:
+
+* `mymodel_config.json`
+* `mymodel_weights.json`
+
+---
+
+## 5. Adding Advanced Neurons
+You can add additional neurons to the model:
+
+```python
+model.addneuron(kind="memory", size=64)
+model.addneuron(kind="attention")
+model.addneuron(kind="nalu")
+model.addneuron(kind="graph", nodes=[1,2,3], edges=[(1,2),(2,3)])
+model.addneuron(kind="spiking")
+```
+
+Each neuron type has a specific function:
+* 🧠 **Memory** → internal model storage
+* 🎯 **Attention** → selection of important information
+* 🧮 **NALU** → Logical arithmetic calculations
+* 🔗 **Graph** → Inter-node relationships (Graph Network)
+* ⚡ **Spiking** → Nerve impulse simulation
+
+## 6. Visualization and Debugging
+You can enable *trace mode* to monitor tensor operations:
+from dearning import DOtensor
+
+DOtensor.enable_trace()
+a = DOtensor([1, 2])
+b = DOtensor([3, 4])
+c = a * b + a
+print(DOtensor.get_trace_log())
+
+Output:
+[('mul', [1, 2], [3, 4]), ('add', [1, 2], [3, 4])]
+
+I can generate the file directly for you to upload to PyPI or your project documentation.
