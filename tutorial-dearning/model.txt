@@ -75,5 +75,3 @@ print(DOtensor.get_trace_log())
 
 Output:
 [('mul', [1, 2], [3, 4]), ('add', [1, 2], [3, 4])]
-
-I can generate the file directly for you to upload to PyPI or your project documentation.
