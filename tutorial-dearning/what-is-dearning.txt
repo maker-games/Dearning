@@ -6,7 +6,7 @@ Previously, Dearning was made on the Redmi 13 my phone and was just a simple too
 until Oriza (that's me) learned the Pythagorean theorem formula and researched the mathematical formulas to see if they were good for my project.
 
 Dearning has 7 modules, namely:
-- model : 
+- model : https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/model.txt
 - Quantum :
 - service :
 - training :
