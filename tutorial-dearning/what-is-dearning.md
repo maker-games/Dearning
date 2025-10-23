@@ -8,10 +8,10 @@ until Oriza (that's me) learned the Pythagorean theorem formula and researched t
 
 ##Modules
 Dearning has 7 modules, namely:
-[model](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/model.md)
-[Quantum]
-[service]
-[training]
-[utils]
-[AI_tools]
+[model](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/model.md),
+[Quantum],
+[service],
+[training],
+[utils],
+[AI_tools],
 [AI_core]
