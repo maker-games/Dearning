@@ -18,6 +18,7 @@ model = CustomAIModel(loss="mse")
 model.add(Dense(4, 8)) # Layer input=4, output=8
 model.add(Activation("relu")) # ReLU activation function
 model.add(Dense(8, 1)) # Layer Output
+```
 
 ## 3. Model Training
 ```python
@@ -25,7 +26,6 @@ model.add(Dense(8, 1)) # Layer Output
 X = [[0.1, 0.2, 0.3, 0.4],
 [0.4, 0.3, 0.2, 0.1]]
 y = [[0.5], [0.2]]
-
 # Train the model for 10 epochs
 model.train(X, y, epochs=10, learning_rate=0.01)
 
@@ -37,13 +37,11 @@ Epoch 2/10, Loss: 0.1208
 ```python
 model.save_model("mymodel")
 loaded = CustomAIModel.load_model("mymodel")
-
+```
 A saved model produces two files:
 
 * `mymodel_config.json`
 * `mymodel_weights.json`
-
----
 
 ## 5. Adding Advanced Neurons
 You can add additional neurons to the model:
