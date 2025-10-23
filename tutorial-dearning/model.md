@@ -7,7 +7,7 @@ The structure is modular and lightweight, but still supports modern features suc
 * Saving and loading models (`save_model` and `load_model`)
 * Additional neuron types (Memory, Attention, NALU, Mixture of Experts, Graph, etc.)
 
-## 2. Basic Model Structure
+## 1. Basic Model Structure
 ```python
 from dearning import CustomAIModel, Dense, Activation
 # Creating a new model
@@ -19,7 +19,7 @@ model.add(Activation("relu")) # ReLU activation function
 model.add(Dense(8, 1)) # Layer Output
 ```
 
-## 3. Model Training
+## 2. Model Training
 ```python
 # Example Data
 X = [[0.1, 0.2, 0.3, 0.4],
@@ -27,13 +27,14 @@ X = [[0.1, 0.2, 0.3, 0.4],
 y = [[0.5], [0.2]]
 # Train the model for 10 epochs
 model.train(X, y, epochs=10, learning_rate=0.01)
-
+```
+```output
 Output:
 Epoch 1/10, Loss: 0.1342
 Epoch 2/10, Loss: 0.1208
 ```
 
-## 4. Saving and Loading the Model
+## 3. Saving and Loading the Model
 ```python
 model.save_model("mymodel")
 loaded = CustomAIModel.load_model("mymodel")
@@ -42,7 +43,7 @@ A saved model produces two files:
 * `mymodel_config.json`
 * `mymodel_weights.json`
 
-## 5. Adding Advanced Neurons
+## 4. Adding Advanced Neurons
 You can add additional neurons to the model
 ```python
 model.addneuron(kind="memory", size=64)
@@ -59,7 +60,7 @@ Each neuron type has a specific function:
 * 🔗 **Graph** → Inter-node relationships (Graph Network)
 * ⚡ **Spiking** → Nerve impulse simulation
 
-## 6. Visualization and Debugging
+## 5. Visualization and Debugging
 You can enable *trace mode* to monitor tensor operations
 ```python
 from dearning import DOtensor
@@ -68,7 +69,8 @@ a = DOtensor([1, 2])
 b = DOtensor([3, 4])
 c = a * b + a
 print(DOtensor.get_trace_log())
-
+```
+```output
 Output:
 [('mul', [1, 2], [3, 4]), ('add', [1, 2], [3, 4])]
 ```
