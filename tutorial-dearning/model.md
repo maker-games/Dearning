@@ -10,7 +10,6 @@ The structure is modular and lightweight, but still supports modern features suc
 ## 2. Basic Model Structure
 ```python
 from dearning import CustomAIModel, Dense, Activation
-
 # Creating a new model
 model = CustomAIModel(loss="mse")
 
@@ -32,6 +31,7 @@ model.train(X, y, epochs=10, learning_rate=0.01)
 Output:
 Epoch 1/10, Loss: 0.1342
 Epoch 2/10, Loss: 0.1208
+```
 
 ## 4. Saving and Loading the Model
 ```python
@@ -39,13 +39,11 @@ model.save_model("mymodel")
 loaded = CustomAIModel.load_model("mymodel")
 ```
 A saved model produces two files:
-
 * `mymodel_config.json`
 * `mymodel_weights.json`
 
 ## 5. Adding Advanced Neurons
-You can add additional neurons to the model:
-
+You can add additional neurons to the model
 ```python
 model.addneuron(kind="memory", size=64)
 model.addneuron(kind="attention")
@@ -62,9 +60,9 @@ Each neuron type has a specific function:
 * ⚡ **Spiking** → Nerve impulse simulation
 
 ## 6. Visualization and Debugging
-You can enable *trace mode* to monitor tensor operations:
+You can enable *trace mode* to monitor tensor operations
+```python
 from dearning import DOtensor
-
 DOtensor.enable_trace()
 a = DOtensor([1, 2])
 b = DOtensor([3, 4])
@@ -73,3 +71,4 @@ print(DOtensor.get_trace_log())
 
 Output:
 [('mul', [1, 2], [3, 4]), ('add', [1, 2], [3, 4])]
+```
