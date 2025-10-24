@@ -5,7 +5,7 @@ to find out whether dearning is compatible with your device, how big it is, and 
 
 example in smartphone
 ```command
-/storage/emulated/0 $ dearning -statW
+/storage/emulated/0 $ dearning -stat
 Ukuran dearning: 373.96 KB
 Device: Linux
 Python: 3.13.2 (compatible=True)
