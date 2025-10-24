@@ -1,6 +1,6 @@
 ## About Dearning
 Dearning is an AI framework library designed to be lightweight and compatible with various devices.  
-This library was created on **January 4, 2025**, by **Oriza**.  
+This library was created on **January 4, 2025**, by **Oriza** but the release on pypi is on **August 25, 2025**.  
 Dearning is a **pure Python library** and uses complex mathematics to optimize its performance.
 
 Previously, Dearning was made on my **Redmi 13** phone and was just a simple tool for AI model experiments —  
