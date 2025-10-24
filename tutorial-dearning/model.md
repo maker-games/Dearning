@@ -1,4 +1,4 @@
-The model module provides a pure Python-based artificial neural network (AI) modeling system.
+The model is first module provides a pure Python-based artificial neural network (AI) modeling system.
 The structure is modular and lightweight, but still supports modern features such as:
 * `Dense` layers (fully connected)
 * Activation functions (`ReLU`, `Sigmoid`, `Tanh`)
