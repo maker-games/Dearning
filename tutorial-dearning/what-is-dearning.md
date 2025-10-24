@@ -7,7 +7,7 @@ Previously, Dearning was made on my **Redmi 13** phone and was just a simple too
 until Oriza (that’s me) learned the **Pythagorean theorem** and started researching mathematical formulas  
 to see if they could improve my project.
 
-For those who asked why it took so long to release, it was because at that time I didn't have a laptop to upload and develop these libraries.
+For those who asked why it took so long to release, it was because at that time I didn't have a laptop to upload and develop these library.
 
 ---
 
@@ -28,5 +28,6 @@ Dearning has its own commands to provide additional information or run something
 
 here is the command:
 - dearning --stat
+- dearning --help / --h
 
 For complete details, see [Dearning-command](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/Dearning-command.md)
