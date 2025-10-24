@@ -12,4 +12,41 @@ Python: 3.13.2 (compatible=True)
 /storage/emulated/0 $
 ```
 
+---
 
+## dearning --help 
+to give existing commands
+
+example in smartphone
+```command
+/storage/emulated/0 $ dearning --help
+usage: dearning [-h] [--task {classification,regression}]
+                [--epochs EPOCHS] [--lr LR] [--stats]
+
+🧠 Dearning CLI Interface
+
+options:
+  -h, --help            show this help message and exit
+  --task {classification,regression}
+  --epochs EPOCHS
+  --lr LR
+  --stats               Tampilkan status dearning (ukuran +
+                        kompatibilitas)
+```
+or you can use the command dearning --h
+```command
+/storage/emulated/0 $ dearning --h
+usage: dearning [-h] [--task {classification,regression}]
+                [--epochs EPOCHS] [--lr LR] [--stats]
+
+🧠 Dearning CLI Interface
+
+options:
+  -h, --help            show this help message and exit
+  --task {classification,regression}
+  --epochs EPOCHS
+  --lr LR
+  --stats               Tampilkan status dearning (ukuran +
+                        kompatibilitas)
+/storage/emulated/0 $
+```
