@@ -18,3 +18,11 @@ Dearning has 7 modules, namely:
 - [utils](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/utils.md)
 - [AI_tools](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/AI_tools.md)
 - [AI_core](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/AI_core.md)
+
+---
+
+## command
+Dearning has its own commands to provide additional information or run something.
+- dearning --stat
+
+For complete details, see [Dearning-command](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/Dearning-command.md)
