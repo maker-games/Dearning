@@ -12,7 +12,7 @@ to see if they could improve my project.
 ## Modules
 Dearning has 7 modules, namely:
 - [model](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/model.md)
-- [Quantum](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/quantum.md)
+- [Quantum](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/Quantum.md)
 - [service](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/service.md)
 - [training](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/training.md)
 - [utils](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/utils.md)
