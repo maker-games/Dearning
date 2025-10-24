@@ -7,7 +7,8 @@ Previously, Dearning was made on my **Redmi 13** phone and was just a simple too
 until Oriza (that’s me) learned the **Pythagorean theorem** and started researching mathematical formulas  
 to see if they could improve my project.
 
-(Why did it take so long to release? Because at that time I didn't have a laptop to upload and develop these libraries.) 
+For those who asked why it took so long to release, it was because at that time I didn't have a laptop to upload and develop these libraries.
+
 ---
 
 ## Modules
