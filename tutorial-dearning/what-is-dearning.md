@@ -25,6 +25,8 @@ Dearning has 7 modules, namely:
 
 ## command
 Dearning has its own commands to provide additional information or run something.
+
+here is the command:
 - dearning --stat
 
 For complete details, see [Dearning-command](https://github.com/maker-games/Dearning/blob/main/tutorial-dearning/Dearning-command.md)
