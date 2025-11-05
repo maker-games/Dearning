@@ -63,13 +63,13 @@ Example:
 model.add(Dropout(0.3)) # 30% of neurons will be deactivated during training
 ```
 
-1.5. Proses Forward dan Backward
+1.5. Forward and Backward Processes 
 
-Setiap layer mendukung:
-* forward(x) → proses maju menghitung output
-* backward(grad) → menghtung gradien untuk pembaruan bobot
+Each layer supports: 
+* forward(x) → forward process calculates the output
+* backward(grad) → calculates the gradient for weight updates 
 
-Semua ini berjalan otomatis saat:
+All of this happens automatically when:
 ```python
 model.train(X, y, epochs=20, learning_rate=0.01)
 ```
