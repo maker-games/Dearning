@@ -1,7 +1,7 @@
 # Dearning
 Dearning homes
 
-![Visitors](https://visitor-badge.io/badge?page_id=maker-games.Dearning&style=flat-square)
+![Visitors](https://komarev.com/ghpvc/?username=maker-games&label=Visitors&color=blue&style=flat)
 
 in development
 
