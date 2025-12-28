@@ -18,7 +18,6 @@ This module consists of four major parts:
 1. **CodeTracker** → decorator logging system
 2. **BinaryConverter** → string/file to binary conversion
 3. **ByteConverter** → byte size conversion (KB, MB, GB, etc.)
-4. **DafeGuard** → quantum/classical-based anomaly detection and monitoring system
 
 ---
 
@@ -112,61 +111,6 @@ print(ByteConverter.to_bytes(1, "MB")) # 1048576
 
 ---
 
-### D. `DafeGuard`
-
-This is the **core of Dearning's** security system.
-
-`DafeGuard` runs automatically when Dearning is imported, and does the following:
-
-* Monitors the framework size and structure
-* Runs the *Quantum Engine* mode (if available)
-* Detects anomalies with the **Mahalanobis Distance** algorithm
-* Runs a background thread for monitoring
-* Saves log results to `~/.dearning/dafe.log`
-* Works even without NumPy and TensorFlow**
-
-#### Main parameters:
-
-| Parameter | Description |
-| ------------------- | --------------------------------------------------------------- |
-| `window_size` | Maximum amount of data stored in the detection window |
-| `anomaly_threshold` | Anomaly score threshold |
-| `telemetry_opt_in` | If `True`, compressed data will be stored locally as telemetry |
-| `auto_instrument` | Experimental mode for tracking automated functions |
-
-#### Internal features:
-
-* `scan_environment()` → scans the Dearning directory and records the total size
-* `get_directory_size()` → calculates the total folder size (KB)
-* `record_event()` → inserts data into the Quantum & Mahalanobis system
-* `_update_stats()` → calculates the mean and covariance
-* `_background_worker()` → background thread for monitoring
-* `_store_flagged()` → saves suspicious events to the `audit.jsonl` file
-* `_upload_telemetry_summary()` → writes local telemetry data
-
-#### Protection Mechanism:
-
-This module can only be accessed **through `dearning`**, not directly.
-If the user tries to `import AI_core` directly, an error will appear:
-
-```
-ImportError: ❌ DAFE should not be accessed directly.
-```
----
-
-## 3. Quantum Integration
-
-If the `dearning.Quantum` module is available, DAFE will:
-
-* Initialize the Quantum Engine
-* ​​Execute the Hadamard Gate operation
-* Measure the superposition probability result
-* Feed the result to the anomaly detection system
-
-If it fails, it automatically falls back to *classical* mode.
-
----
-
 ## Conclusion
 
 | Components | Main Functions | Dependencies |
@@ -174,13 +118,5 @@ If it fails, it automatically falls back to *classical* mode.
 | `CodeTracker` | Track function calls | Pure Python |
 | `BinaryConverter` | Convert code ↔ binary | Pure Python |
 | `ByteConverter` | Convert bytes ↔ units of measure | Pure Python |
-| `DafeGuard` | Automatic security system + Quantum support | Quantum.py (optional) |
-
-AI_core.py is the heart of the Dearning security, integrity, and telemetry framework.
-Without this module, Dearning would not have the following capabilities:
-
-* detect suspicious behavior,
-* track runtime activity,
-* and adapt to the Quantum Engine.
 
 ---
