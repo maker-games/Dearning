@@ -1,145 +1,125 @@
-The model is first module provides a pure Python-based artificial neural network (AI) modeling system.
-The structure is modular and lightweight, but still supports modern features such as:
-* `Dense` layers (fully connected)
-* Activation functions (`ReLU`, `Sigmoid`, `Tanh`)
-* `Dropout` layers
-* Manual backpropagation
-* Saving and loading models (`save_model` and `load_model`)
-* Additional neuron types (Memory, Attention, NALU, Mixture of Experts, Graph, etc.)
+`model` is a module for creating custom AI models.
 
-## 1. Basic Model Structure
-1.1. CustomAIModel
+---
 
-The main class for building and training AI models.
+## 1. Basic Architectural Concepts
 
-Features:
-* Adding layers (Dense, Activation, Dropout)
-* Supports forward pass, backpropagation, and weight updates
-* Saving and loading models
-* Adding custom neurons (Memory, Attention, NALU, Graph, etc.)
+### 1.1 Model Types
 
-Example:
-```python
-from dearning import CustomAIModel, Dense, Activation
-# Creating a new model
-model = CustomAIModel(loss="mse")
+The models built are:
+* **Sequential / Linear Chain**
+* One-way data flow
+* Does not support branching
+---
+## 2. DOtensor
+### 2.1 Definition
+`DOtensor` stands for Dearning Of tensor. This function acts as an autograder for models, but currently it can only represent 1D vectors with the following capabilities:
+* Arithmetic operations
+* Computational graph construction
+* Automatic backpropagation
+So this is not yet a general multidimensional tensor. (but will be continuously updated to allow for this)
 
-# Adding Dense and Activation layers
-model.add(Dense(4, 8)) # Layer input=4, output=8
-model.add(Activation("relu")) # ReLU activation function
-model.add(Dense(8, 1)) # Layer Output
-```
+DOtensor has several functions:
+- backward
+- zero_grad
+- DTS
+- trace
+---
+### 2.2 backward
+The 'backward' function performs backpropagation on the computation graph.
 
-1.2. Dense(input_dim, output_dim)
-
-Fully Connected neural network layer.
-Function: Calculates the linear result of the input and weights.
-y = xW + b
-
-Example:
-```python
-model.add(Dense(4, 16))
-```
-
-1.3. Activation(kind)
-
-Adds a non-linear activation function.
-Supported types:
-* "relu"
-* "sigmoid"
-* "tanh"
-
-Example:
-```python
-model.add(Activation("relu"))
-```
-
-1.4. Dropout(rate)
-
-Used to prevent overfitting by deactivating some neurons.
-
-Example:
-```python
-model.add(Dropout(0.3)) # 30% of neurons will be deactivated during training
-```
-
-1.5. Forward and Backward Processes 
-
-Each layer supports: 
-* forward(x) → forward process calculates the output
-* backward(grad) → calculates the gradient for weight updates 
-
-All of this happens automatically when:
-```python
-model.train(X, y, epochs=20, learning_rate=0.01)
-```
-
-## 2. Model Training
-```python
-# Example Data
-X = [[0.1, 0.2, 0.3, 0.4],
-[0.4, 0.3, 0.2, 0.1]]
-y = [[0.5], [0.2]]
-# Train the model for 10 epochs
-model.train(X, y, epochs=10, learning_rate=0.01)
-```
-```output
-Output:
-Epoch 1/10, Loss: 0.1342
-Epoch 2/10, Loss: 0.1208
-```
-
-## 3. Saving and Loading the Model
-```python
-model.save_model("mymodel")
-loaded = CustomAIModel.load_model("mymodel")
-```
-A saved model produces two files:
-* `mymodel_config.json`
-* `mymodel_weights.json`
-
-## 4. Adding Advanced Neurons
-
-You can add additional neurons to the model
-```python
-model.addneuron(kind="memory", size=64)
-model.addneuron(kind="attention")
-model.addneuron(kind="nalu")
-model.addneuron(kind="graph", nodes=[1,2,3], edges=[(1,2),(2,3)])
-model.addneuron(kind="spiking")
-```
-
-Each neuron type has a specific function:
-* 🧠 **Memory** → internal model storage
-* 🎯 **Attention** → selection of important information
-* 🧮 **NALU** → Logical arithmetic calculations
-* 🔗 **Graph** → Inter-node relationships (Graph Network)
-* ⚡ **Spiking** → Nerve impulse simulation
-
-## 5. DOtensor
-
-The DOtensor class is used for basic tensor.
-
-Features:
-* +, * operations between tensors
-* Gradient tracking support
-* Trace mode for debugging
-
-Example:
+Example code:
 ```python
 from dearning import DOtensor
-DOtensor.enable_trace()
-a = DOtensor([1, 2])
-b = DOtensor([3, 4])
-c = a * b + a
-print(DOtensor.get_trace_log())
+x = DOtensor([2.0, 3.0], requires_grad=True)
+y = DOtensor([4.0, 5.0], requires_grad=True)
+z = x * y + x
+s = z.DTS()
+s.backward()
 ```
-```output
-Output:
-[('mul', [1, 2], [3, 4]), ('add', [1, 2], [3, 4])]
+Must be called on a scalar tensor (the final result).
+
+---
+
+### 2.3 zero_grad
+The 'zero_grad' function resets the gradient.
+
+Example code:
+```python
+x.zero_grad()
+y.zero_grad()
 ```
+---
+### 2.4 DTS
+The 'DTS' function sums all tensor elements into a single scalar value,
+while preserving the autograd path for backpropagation.
 
+Example code:
+```python
+from dearning import DOtensor
+x = DOtensor([2.0, 3.0], requires_grad=True)
+y = DOtensor([4.0, 5.0], requires_grad=True)
+z = x * y + x
+s = z.DTS()
+```
+---
+### 2.5 Tracing
+The 'trace' function is helpful for debugging, for example, to ensure proper graph alignment, the order of operations, and the like.
+This function can be enabled or disabled as desired.
 
+example code:
+```python
+with DOtensor.trace(enable=True) as log:
+a = DOtensor([2.0], requires_grad=True)
+b = DOtensor([3.0], requires_grad=True)
+c = (a * b).DTS()
+c.backward()
+for step in log: print(step)
+```
+---
+## 6. CustomAIModel
+### 6.1 Definition
+The `CustomAIModel` function is created and used to create AI models, but currently, only sequential or linear chain models can be created.
 
+CustomAIModel has several functions:
+- add
+- forward
+- backward
+- seed
+- zero_grad
+- step
+---
+### 6.2 add
+The `add` function is used to create layers.
 
+Example code:
+python```
+from dearning import CustomAIModel
+model = CustomAIModel()
+model,add(Dense(1, 1))
+``
+---
+### 6.3 forward
+---
+### 6.4 backward
+---
+### 6.5 seed
+seed is a function to set the random seed.
 
+example code:
+from dearning import CustomAIModel
+model = CustomAIModel(loss="mse")
+model.seed(42)
+---
+### 6.6 zero_grad
+---
+### 6.7 steps
+The `step` function is used to update all model parameters using a certain learning rate.
+
+example code:
+from dearning import CustomAIModel,Dense
+model = CustomAIModel(loss="mse")
+model.add(Dense(1, 1))
+
+lr = 0.1
+model.step(lr)
