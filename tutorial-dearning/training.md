@@ -1,166 +1,147 @@
-## 1) **`test_model`` Function**
+`training` is the module that trains AI models.
 
-### Function
-Used to:
-* Test the AI ​​model after training
-* Modify the prediction results to make them more stable (log → exp → pythagoras)
-* Measure accuracy, loss, and prediction insight
+## 1. `datal` Class
+### Definition
+`datal` is a **data utility namespace** (not an instantiable class) that provides:
+* synthetic data generation,
+* batch loading,
+* feature transformation.
 
-### Brief Definition
-```python
-result = test_model(model, X, y, formula=None, verbose=True)
-```
-
-### Parameters
-| Name | Type | Description |
-| --------- | ----------------- | --------------------------------- |
-| `model` | CustomAIModel | AI model to be tested |
-| `X` | list[list[float]] | Input data |
-| `y` | list[list[float]] | Label |
-| `formula` | str | Transformation formula name notes |
-| `verbose` | bool | Output to the console |
-
-### Output
-Dictionary contains:
-* accuracy
-* loss
-* final_preds
-* insight (mean/max/min prediction)
-* formula_used
-
-### How to Use
-```python
-result = test_model(model, X, y)
-print(result["accuracy"])
-```
+It is intended to quickly generate **training-ready datasets**.
 
 ---
 
-# 2) **Class `transform`**
-Transforms input data to:
-* be more stable
-* make the model easier to train
-* be more informative
-
-### Features
-* log transform
-* exp transform
-* matrix projection
-* averaging 3 methods (log + exp + linear)
-
-### How to Use
+## 1.1 `datal.load(...)`
 ```python
-from dearning.training import transform
-tr = transform()
-X2 = tr.transform(X)
+datal.load(task="classification", n_samples=500, n_features=4)
 ```
+
+### Definition
+Generates a normalized synthetic dataset for:
+* classification
+* regression
 
 ---
 
-# 3) **Class `datal`**
-Used to create a batch loader
+### Behavior
+#### Classification
+
+* Input `X`: Gaussian random values
+* Label `y`:
+
+`1` if **more than half** of the features are positive, otherwise `0`
+
+#### Regression
+* Input `X`: Gaussian random values
+* Label `y`: `sum(features) + noise`
 
 ---
 
-## 3.1) **`datal.load()`**
-Dearning's built-in dataset generator.
-
-### Signature
+Example code:
 ```python
-X, y = datal.load(task="classification", n_samples=500, n_features=4)
+from dearning import datal
+X, y = datal.load(task="regression", n_samples=100, n_features=3)
 ```
-
-### Available Tasks
-* `"classification"` → generates a 0/1 label based on the number of positive values
-* `"regression"` → generates a numeric target
-
-### Example Use
+return value
 ```python
-from dearning.training import datal
-X, y = datal.load(task="regression", n_samples=1000, n_features=5)
+X, y
 ```
-
-Because this function uses `@cached()`, if it is called twice with the same parameters, the loading time will be much shorter.
+* `X`: `List[List[float]]`
+* `y`: `List[List[float]]`
 
 ---
 
-## 3.2) **`datal.loader()`**
-Used for **mini-batch training**.
-
-### Example of use
+## 1.2 `datal.loader(...)`
 ```python
-loader = datal.loader(X, y, batch=32)
-for Xb, yb in loader: 
-print(len(Xb)) #32
+datal.loader(X, y, batch=32, shuffle=True)
+```
+
+### Definition
+Generates a mini-batch of data for the training loop.
+
+---
+
+### Behavior
+* Randomizes index (optional)
+* Generates a tuple `(X_batch, y_batch)`
+* **Does not** copy data unnecessarily
+
+---
+
+Example code:
+```python
+for Xb, yb in datal.loader(X, y, batch=16): print(Xb, yb)
+```
+---
+## 3.3 `datal.transform(...)`
+```python
+datal.transform(X)
+```
+
+### Definition
+Creates a **feature-enriched representation** of the raw input data.
+
+### Applied Transformations
+For each sample:
+1. Logarithmic transformation
+2. Exponential transformation
+
+Example code:
+```python
+X_new = datal.transform(X)
 ```
 
 ---
 
-#4) **Multi-Model `train()` Function**
-The most important feature in this module.
-
-### Key Features
-* Multi-model training (parallel thread)
-* Thread-safe
-* Deterministic output
-* Supports custom transforms (logekstrainnix)
-* Automatic preprocessing
-* Automatic evaluation
-
----
-
-## 4.1) **How ​​to Use – Single Model**
+## 2. `train(...)` function
 ```python
-from dearning.training import train
-
-model = CustomAIModel()
-models, results = train(model)
+train(models, X, y, *, task=None, epochs=100, lr=0.01, batch_size=None, detail=False, log_interval=1)
 ```
 
----
-
-## 4.2) **How ​​to Use – Multi-Model**
-```python
-m1 = AIModel()
-m2 = AIModel()
-m3 = AIModel()
-models, results = train([m1, m2, m3], epochs=150)
-```
+### Definition
+`train` is The **training controller** that trains this model:
+* supports regression and classification,
+* runs the model in parallel threads,
+* reports loss, accuracy, and duration.
 
 ---
 
-## 4.3) Output Format
-`results` is a list containing data from each model:
+## 2.1 Model Requirements
+Each model **must provide**:
 
 ```python
-[
-("model_0", {"accuracy":0.89, ...}, 1.923), 
-("model_1", {"accuracy":0.92, ...}, 2.174)
-]
+model.forward(X)
+model._loss(y_pred, y_true)
+model.train(X, y, epochs, learning_rate, batch_size, task)
 ```
+Optional:
+* `model.name` (for logging)
 
 ---
 
-## 5) **Complete Usage Example**
-```python
-from dearning.training import datal, train, test_model
-from dearning import CustomAIModel
+## 2.3 Loss & Accuracy
+### Regression
+* Loss: Mean Squared Error (MSE)
+* Accuracy: not calculated
 
-# Create a model
-m = CustomAIModel()
-m.add_layer(16)
-m.add_layer(8)
-m.add_activation("relu")
-
-# Create a dataset
-X, y = datal.load(task="classification", n_samples=500)
-
-# Trains
-models, results = train(m, epochs=200)
-
-# Test
-score = test_model(models[0], X, y)
-print(score)
-```
+### Classification
+* Loss: Cross entropy (expected)
+* Accuracy: 
+* Binary: threshold at 0.5 
+* Multi-class: argmax
 
 ---
+
+## 2.4 Logging Behavior
+If `detail=True`:
+```
+epoch 1, model_0 | loss 0.123456
+epoch 2, model_0 | loss 0.012345
+...
+[{'model': 'model_0', 'loss': 0.00388108, 'duration': 0.002694368362426758}]
+```
+
+If `detail=False` (default):
+```
+[{'model': 'model_0', 'loss': 23.38810804115213, 'duration': 0.002694368362426758}]
+```
