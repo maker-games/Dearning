@@ -1,122 +1,62 @@
-`AI_core.py` is the **core security and analytics system** of the Dearning framework.
-
-This module functions to:
-
-* Track code and function activity (`CodeTracker`)
-* Convert code or files to binary representation (`BinaryConverter`)
-* Convert byte sizes to human units (`ByteConverter`)
-* Provide **an automated DAFE (Dearning AI Front-End) protection layer** to detect anomalies, malware, or unusual behavior within the Dearning framework.
-
-Overall, `AI_core` is the **internal security brain** of the entire framework.
+`AI_core` only provides **one main component**, namely **Converter**, a data conversion utility (text ↔ binary, byte units).
 
 ---
 
-## 1. General Structure
-
-This module consists of four major parts:
-
-1. **CodeTracker** → decorator logging system
-2. **BinaryConverter** → string/file to binary conversion
-3. **ByteConverter** → byte size conversion (KB, MB, GB, etc.)
+## 1. Converter Class
+### Definition
+`Converter` is a stateless utility for:
+* Converting text ↔ ASCII binary
+* Converting data units (B, KB, MB, etc.)
 
 ---
 
-## 2. Main Classes and Functions
-
-### A. `CodeTracker`
-
-This class allows you to automatically track function calls and their results using decorators.
-
-####  Main functions:
-
-| Function | Description |
-| --------------------- | -------------------------------------------------------- |
-| `__call__` | Allows the use of `@tracker` directly above a function |
-| `log_function_call()` | Alternative to the `@tracker.log_function_call` decorator |
-| `get()` | Retrieves all recorded logs |
-| `clear()` | Clears all previous logs |
-
-####  Usage example:
-
+### 1.1 `Converter.text2binary`
 ```python
-from dearning import CodeTracker
-tracker = CodeTracker()
-
-@tracker.log_function_call
-def add(a, b):
-return a + b
-
-print(add(2, 3))
-print(tracker.get())
+Converter.text2binary(data, *, to="binary", encoding="utf-8", sep=" ")
 ```
+| Parameters | Type | Description |
+| ---------- | --------------------- | ----------------------------- |
+| `data` | `str` / `bytes` | Input data |
+| `to` | `"binary"` / `"text"` | Conversion mode |
+| `encoding` | `str` | Text encoding |
+| `sep` | `str` | Binary separator (default space) |
 
-**Log output:**
+#### Definition
+`text2binary` is only for converting:
+* text → ASCII binary
+* ASCII binary → text
 
-```
-['add() called.', ' add completed. → 5']
-```
-
----
-
-### B. `BinaryConverter`
-
-Converts **Python code or text files to ASCII binary representation** and vice versa.
-
-#### Main functions:
-
-| Function | Description |
-| ------------------------- | ------------------------------------ |
-| `code2binary(code_str)` | Converts text to ASCII binary |
-| `file2binary(file_path)` | Reads a file and converts it to binary |
-| `binary2code(binary_str)` | Returns ASCII binary to a string |
-
-#### Usage example:
-
+Example code:
 ```python
-from dearning import BinaryConverter
-bc = BinaryConverter()
+from dearning import Converter
+print(Converter.text2binary("Hello", to="binary"))
 
-binary = bc.code2binary("print('Hi')")
-print(binary)
-print(bc.binary2code(binary))
-```
-
-**Output:**
-
-```
-01110000 01110010 01101001 ...
-print('Hi')
+# 01001000 01100101 01101100 01101100 01101111
+print(Converter.text2binary("01001000 01100101 01101100 01101100 01101111", to="text")
+# Hello
 ```
 
 ---
 
-### C. `ByteConverter`
-
-Utility class for converting byte sizes to a more readable format (KB, MB, GB, etc.).
-
-#### Main functions:
-
-| Function | Description |
-| ----------------------------------- | ---------------------------------------------------- |
-| `convert(size_bytes, precision=2)` | Convert bytes → human-sized string |
-| `to_bytes(value, unit)` | Convert a specific value to bytes (e.g., 2 MB → 2097152 B) |
-
-#### Example:
-
+### 1.2 `Converter.unit`
 ```python
-from dearning import ByteConverter
-print(ByteConverter.convert(10240)) # "10.00 KB"
-print(ByteConverter.to_bytes(1, "MB")) # 1048576
+Converter.unit(value, to="B", (binary=True, precision=4)
 ```
+| Parameters | Type | Description |
+| ----------- | ----------------------- | ----------------------------- |
+| `value` | `int` / `float` / `str` | Initial value (e.g., `"2MB"`) |
+| `to` | `str` | Target unit |
+| `binary` | `bool` | 1024 (True) or 1000 (False) |
+| `precision` | `int` | Number of decimal places |
 
----
+#### Definition
+Converts data size between bytes.
 
-## Conclusion
+example code:
+```python
+Converter.unit("2048B", to="KB")
+# 2.0
 
-| Components | Main Functions | Dependencies |
-| ----------------- | ------------------------------------------ | --------------------- |
-| `CodeTracker` | Track function calls | Pure Python |
-| `BinaryConverter` | Convert code ↔ binary | Pure Python |
-| `ByteConverter` | Convert bytes ↔ units of measure | Pure Python |
-
----
+Converter.unit("1GB", to="MB")
+# 1024.0
+```
