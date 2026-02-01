@@ -196,11 +196,11 @@ CustomAIModel has several functions:
 The `add` function is used to create layers.
 
 Example code:
-python```
+```python
 from dearning import CustomAIModel
 model = CustomAIModel()
-model,add(Dense(1, 1))
-``
+model.add(Dense(1, 1))
+```
 ---
 ### 6.3 forward
 example code:
