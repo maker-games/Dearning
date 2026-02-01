@@ -48,24 +48,11 @@ def f(x): ...
 
 ---
 
-## 2. `scale_data`
-```python
-scale_data(data)
-```
-### 2.1 Definition
-`scale_data` function to perform manual Z-score normalization.
-
-example code:
-```python
-scaled = scale_data([[1,2],[3,4],[5,6]])
-```
-
----
-
-## 3. `preprocess_data`
+## 2. `preprocess_data`
 ``` python
 preprocess_data(data, n_jobs=-1, optimizer_args=None)`
 ```
+### 2.1 Definition
 The `preprocess_data` function transforms raw data into safer and more consistent data. It also supports:
 * `sgd`
 * `momentum`
@@ -81,10 +68,7 @@ X = preprocess_data(X)
 
 Scaling + optimizer step
 ```python
-X_scaled, (w_new, b_new, state) = preprocess_data(
-X,
-optimizer_args=(w, b, grad_w, grad_b, layer_idx, "adam", 0.001, 0.9, 0.999, 1e-8, state)
-)
+X_scaled, (w_new, b_new, state) = preprocess_data(X, optimizer_args=(w, b, grad_w, grad_b, layer_idx, "adam", 0.001, 0.9, 0.999, 1e-8, state))
 ```
 
 ---
@@ -100,16 +84,27 @@ If `task=None`, then:
 * `{0,1}` → Classification
 * Additional → Regression
 
----
+example code:
 
-### 3.2 Regression
+Regression:
 ```python
-{"mse": float, "r2": float, "mean_error": float}
+from dearning import CustomAIModel, Dense, Activation, evaluate_model
+data = [[0.1, 0.2], [0.2, 0.3], [0.3, 0.4]]
+labels = [[0.3], [0.5], [0.7]]
+model = CustomAIModel(loss="mse", name="model")
+b1 = model.connect(Dense(2, 1), data)
+b1 = model.connect(Activation("relu"), b1)
+print(evaluate_model(model, data, labels, task="regression"))
 ```
-
-### Classification
+Classification:
 ```python
-{"accuracy": float, "precision": float, "recall": float, "f1_score": float, "confusion_matrix": [[tn, fp],[fn,tp]], "report": {...}}
+from dearning import CustomAIModel, Dense, Activation, evaluate_model
+model = CustomAIModel(loss="cross_entropy", name="model")
+data = [[0.1, 0.2], [0.8, 0.9], [0.4, 0.5]]
+labels = [[0], [1], [0]]
+b2 = model.connect(Dense(2, 1), data)
+b2 = model.connect(Activation("sigmoid"), b2)
+print(evaluate_model(model, data, labels, task="classification"))
 ```
 
 ---
