@@ -7,17 +7,16 @@
 ### 1.1 Model Types
 
 The models built are:
-* **Sequential / Linear Chain**
+* **Sequential and graph**
 * One-way data flow
 * Does not support branching
 ---
 ## 2. DOtensor
 ### 2.1 Definition
-`DOtensor` stands for Dearning Of tensor. This function acts as an autograder for models, but currently it can only represent 1D vectors with the following capabilities:
+`DOtensor` stands for Dearning Of tensor. This function acts as an autograder for models, but currently it can only represent 1D and 2D vectors with the following capabilities:
 * Arithmetic operations
 * Computational graph construction
 * Automatic backpropagation
-So this is not yet a general multidimensional tensor. (but will be continuously updated to allow for this)
 
 DOtensor has several functions:
 - backward
@@ -107,9 +106,7 @@ out = layer.forward(X)
 ### 3.2 Backward Pass
 example code:
 ```python
-grad_out = [[1.0, 1.0, 1.0],
-            [1.0, 1.0, 1.0]]
-
+grad_out = [[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]
 grad_in = layer.backward(grad_out)
 ```
 
@@ -182,10 +179,11 @@ Gradients are masked in the same pattern.
 
 ## 6. CustomAIModel
 ### 6.1 Definition
-The `CustomAIModel` function is created and used to create AI models, but currently, only sequential or linear chain models can be created.
+The `CustomAIModel` function is created and used to create AImodels. 
 
 CustomAIModel has several functions:
-- add
+- add (will be replaced by 'connect') 
+- connect
 - forward
 - backward
 - seed
