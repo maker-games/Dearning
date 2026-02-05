@@ -7,6 +7,7 @@
 ### 1.1 Model Types
 
 The models that can be built are **Sequential and graphical**
+
 ---
 ## 2. DOtensor
 ### 2.1 Definition
