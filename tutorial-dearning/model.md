@@ -6,10 +6,7 @@
 
 ### 1.1 Model Types
 
-The models built are:
-* **Sequential and graph**
-* One-way data flow
-* Does not support branching
+The models that can be built are **Sequential and graphical**
 ---
 ## 2. DOtensor
 ### 2.1 Definition
