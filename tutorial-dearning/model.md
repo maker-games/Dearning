@@ -182,23 +182,34 @@ Gradients are masked in the same pattern.
 The `CustomAIModel` function is created and used to create AImodels. 
 
 CustomAIModel has several functions:
-- add (will be replaced by 'connect') 
+- add (will be replaced by connect) 
 - connect
 - forward
 - backward
 - seed
 - zero_grad
 - step
+
+available losses are only "mse", "cross_entropy", "softmax_cross_entropy"(coming soon)
 ---
-### 6.2 add
+### 6.2 add(will be replaced) - connect
 The `add` function is used to create layers.
 
 Example code:
 ```python
-from dearning import CustomAIModel
+from dearning import CustomAIModel, Dense
 model = CustomAIModel()
-model.add(Dense(1, 1))
+model.add(Dense(2, 1))
 ```
+
+`connect` is the same function as add but can graph 
+
+example code:
+```python
+from dearning import CustomAIModel, Dense
+model = CustomAIModel() 
+inp=[[1.0,0.6],[0.9,1.2]]
+model.connect(Dense(2,1),inp) 
 ---
 ### 6.3 forward
 example code:
