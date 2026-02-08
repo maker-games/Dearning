@@ -78,100 +78,132 @@ dlp.process(text)
 
 ---
 
-## 2. RLTools – Reinforcement Learning Minimal Framework
-Still under development
-### 2.1 Definition
-RL framework **concise and explicit**, suitable for:
+### 1.7 Tokenizer
+#### 1.7.1 Definition
+`Tokenizer` is a simple character-level tokenizer that converts text into a sequence of integer IDs and can return it back to text.
+
+Key characteristics:
+* Tokenization is character-based, not word-based
+* Vocabulary is built dynamically from training data
+* Uses explicit special tokens
+
+When `fit()` is called, the tokenizer builds the vocabulary:
+```text
+["<pad>", "<unk>", "<bos>", "<eos>"] + sorted(unique_characters)
+```
+
+Special tokens meaning:
+| Token | Function |
+| ------- | -------------------------------- |
+| `<pad>` | Padding (not used automatically) |
+| `<unk>` | Unknown character |
+| `<bos>` | Beginning of sequence |
+| `<eos>` | End of sequence |
+
+Vocabulary is **deterministic** because characters are sorted.
+
+The **required** usage sequence is:
+```text
+Tokenizer()
+↓
+fit(texts)
+↓
+encode(text)
+↓
+decode(ids)
+```
+If `encode()` is called before `fit()` → **RuntimeError**.
 
 ---
 
-### 2.2 Environment
-#### `Env` (Abstract)
+### 1.7.2 `Tokenizer()`
+Creates an empty tokenizer instance.
+
 ```python
-reset()
-step(action)
-actions()
-state()
+char2id = {}
+id2char = {}
+fitted = False
 ```
 
-#### `SimpleEnv`
-1D environment:
-* State: integer
-* Action: `-1`, `+1`
-* Reward:
-* `+1` if goal is reached
-* `-0.01` otherwise
-
-example code:
+Example code:
 ```python
-env = RLTools.SimpleEnv(start=0, goal=10)
-```
-
----
-
-### 2.3 Policies
-#### `EpsilonGreedy`
-```python
-policy = RLTools.EpsilonGreedy(eps=0.1)
-```
-
-#### `Softmax`
-```python
-policy = RLTools.Softmax(temp=1.0)
-```
-
----
-
-### 2.4 Agents
-```python
-agent = RLTools.Agent(alpha=0.1, gamma=0.9)
-```
-
-* `q[(state, action)]`
-* Support: 
-* Q-learning 
-* SARSA
-
----
-
-### 2.5 Trainers
-```python
-trainer = RLTools.Trainer(env, agent, episodes=1000, max_steps=100, mode="q" # or "sarsa")
-```
-
-Exercise:
-```python
-log = trainer.train()
+tok = DLP.Tokenizer()
 ```
 
 ---
 
-### 2.6 Evaluators
-```python
-eval = RLTools.Evaluator(env, agent)
-eval.run(episodes=100)
-```
+### 1.7.3 `fit(texts)`
+| Name | Type | Description |
+| ------- | ----------- | ---------------------- |
+| `texts` | `list[str]` | Collection of training texts |
 
-Output:
-```python
-{"mean": float, "max": float, "min": float}
-```
+Building a vocabulary from a collection of texts.
 
----
+Behavior:
+* Captures **all unique characters**
+* Adds special tokens
+* Fills `char2id` and `id2char`
+* Marks tokenizer as `fitted`
 
-### 2.7 Runners & Hooks
-Event-driven training:
+Example code:
 ```python
-runner = RLTools.Runner(trainer)
-runner.engine.on("start", lambda: print("start"))
-runner.engine.on("end", lambda log: print("done"))
-runner.run()
+tok = DLP.Tokenizer()
+tok.fit(["Quantum", "Computing", "is", "the", "future"])
 ```
 
 ---
 
-## 3. image
-### 3.1 `image.load`
+### 1.7.4 `encode(text, add_special=True)`
+| Name | Type | Default | Description |
+| ------------- | ------ | ------- | -------------------------- |
+| `text` | `str` | – | Text input |
+| `add_special` | `bool` | `True` | Add `<bos>` and `<eos>` |
+
+Converts a string to a list of integer IDs.
+
+Important behavior:
+* Unknown character → `<unk>`
+* If `add_special=True`:
+```
+[<bos>] + tokens + [<eos>]
+```
+
+Example code:
+```python
+tok.encode("Quantum")
+# [2, 10, 21, 0, ..., 3] (example)
+```
+
+Without special token:
+```python
+tok.encode("Quantum", add_special=False)
+```
+
+---
+
+### 1.7.5 `decode(ids, skip_special=True)`
+| Name | Type | Default | Description |
+| -------------- | ---------------------------------- | ------- | ----------------------------- |
+| `ids` | `list[int]` or `list[list[int]]` | – | Sequence ID |
+| `skip_special` | `bool` | `True` | Ignore `<bos>`, `<eos>`, etc. |
+
+Converts IDs back to text.
+
+Important behavior:
+* Supports **batch decoding**
+* Special tokens are automatically skipped (default)
+* Unknown IDs → ignored (`""`)
+
+Example code:
+```python
+ids = tok.encode("Quantum Computing")
+tok.decode(ids)
+# "Quantum Computing"
+```
+
+---
+## 2. image
+### 2.1 `image.load`
 ```python
 pix, (w, h), ch = image.load(path, target_size=(64,64), grayscale=True)
 ```
@@ -188,27 +220,27 @@ pix, (w, h), ch = image.load(path, target_size=(64,64), grayscale=True)
 
 ---
 
-### 3.2 `image.resize`
+### 2.2 `image.resize`
 ```python
 image.resize(pix, w, h, target=32, is_rgb=True)
 ```
 
 ---
 
-### 3.3 `image.save`
+### 2.3 `image.save`
 ```python
 image.save("out.pgm", pix, size=64, ch=1)
 ```
 
 ---
 
-## 4. videos
-### 4.1 understanding
+## 3. videos
+### 3.1 understanding
 to make the model can support video(but GIF)
 
 ---
 
-### 4.2 `video.gif`
+### 3.2 `video.gif`
 ```python
 frames = video.gif("anim.gif", target_size=(64,64), as_rgba=True, max_frames=10)
 ```
@@ -221,15 +253,15 @@ List of:
 
 ---
 
-## 5. Qkanalyze
-### 5.1 `top_kprobs`
+## 4. Qkanalyze
+### 4.1 `top_kprobs`
 just take the K largest probability from the lists
 ```python
 Qkanalyze.top_kprobs(preds, k=3)
 ```
 ---
 
-### 5.2 `summarize_array`
+### 4.2 `summarize_array`
 Summary of 1D or 2D list values.
 ```python
 Qkanalyze.summarize_array(arr)
