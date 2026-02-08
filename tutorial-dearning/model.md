@@ -74,9 +74,164 @@ c.backward()
 for step in log: print(step)
 ```
 ---
-## 3. Dense Layer
-### Definition
+## 3. Sequence
+### 3.1 Definition
+`Sequence` is a collection of sequence modeling architectures implemented in pure Python.
 
+Implemented models:
+* `Sequence.RNN`
+* `Sequence.GRU`
+* `Sequence.LSTM`
+* `Sequence.TCN`
+* `Sequence.Transformer`
+
+---
+
+### 3.2 Data Representation
+All tensors are represented as nested Python lists.
+
+| Concept | Shape |
+| ---------------------------- | ----------- |
+| Single sequence | `[T][D]` |
+| Set of sequences | `[B][T][D]` |
+| Token sequence (Transformer) | `[T]` |
+| Set of tokens | `[B][T]` |
+
+The code automatically wraps single sequences into sets internally.
+
+---
+
+### 3.3. Sequence.RNN
+```python
+Sequence.RNN(input_dim, hidden_dim, output_dim=None, return_sequences=False)
+```
+
+| Parameters | Meaning |
+| ------------------ | --------------------------------- |
+| `input_dim` | Input feature size |
+| `hidden_dim` | Hidden state size |
+| `output_dim` | Output size (optional) |
+| `return_sequences` | Return all time steps or only the last one |
+
+---
+
+#### 3.3.1 Definition
+Classical Elman RNN with tanh activation.
+
+---
+
+#### 3.3.2 Forward Input/Output
+Input:
+* `[T][input_dim]` or `[B][T][input_dim]`
+
+Output:
+* If `return_sequences=False`: `[output_dim]` or `[B][output_dim]`
+* If `True`: `[T][output_dim]` or `[B][T][output_dim]`
+
+---
+
+#### 3.3.3 Backward
+```python
+model.backward(grad_output)
+```
+
+* `grad_output` must match the shape of the forward output
+* Returns the gradient with respect to input `X`
+
+---
+
+### 3.4. Sequence.GRU
+```python
+Sequence.GRU(input_dim, hidden_dim, output_dim=None, return_sequences=False)
+Same semantics as `RNN`.
+```
+#### 3.4.1 Definition
+Implements a **Gated Recurrent Unit** with update and reset gates.
+
+Notes:
+* Uses sigmoid and tanh activations
+* Gradient flow is better than a regular RNN
+* Backpropagation gates are completely manual
+
+---
+
+### 3.5. Sequence.LSTM
+```python
+Sequence.LSTM(input_dim, hidden_dim, output_dim=None, return_sequences=False)
+```
+
+#### 3.5.1 Definition
+Long Short-Term Memory with input, forget, and output gates.
+
+State variables:
+* Hidden state `h_t`
+* Cell state `c_t`
+
+---
+
+### 3.6. Sequence.TCN
+```python
+Sequence.TCN(input_dim, channels, kernel_size=3, dilations=None, output_dim=None, return_sequences=False)
+```
+
+| Parameters | Meaning |
+| ----------- | ------------------------------- |
+| `channels` | List of channel sizes per block |
+| `dilations` | Dilations per block |
+
+---
+
+#### 3.6.1 Description
+**Temporal Convolutional Network** with:
+* Causal convolutions
+* Dilations
+* Residual connections
+* ReLU activations
+
+No recurrence. Fully parallel over time.
+
+Notes:
+* Uses causal convolution (no future leakage)
+* Projects residuals when channels change
+* Slower than NumPy-based CNNs
+
+---
+
+### 3.7. Sequence.Transformer
+```python
+Sequence.Transformer(d_model=32, num_heads=4, num_layers=2, d_ff=64, src_vocab_size=None, tgt_vocab_size=None, max_len=256, return_sequences=True)
+```
+
+#### 3.7.1 Definition
+Transformer Encoder–Decoder implemented from scratch
+
+Components:
+* Token embedding
+* Sinusoidal positional encoding
+* Multi-head self-attention
+* Cross-attention
+* Feedforward layer
+* Normalization layer
+
+Input Format:
+Source (`src`):
+* Token ID `[T]` or `[B][T]`
+
+Target (`tgt`):
+* Token ID `[T]` or `[B][T]`
+
+Output:
+* `[T][vocab]` or just the last token
+
+---
+
+#### 3.7.2 Masking
+* Decoder uses **causal mask**
+* Prevents attending to future tokens
+
+---
+## 4. Dense Layer
+### 4.1 Definition
 `Dense` is a **fully connected linear layer**:
 
 example code:
@@ -88,7 +243,7 @@ layer = Dense(input_dim=2, output_dim=3)
 * Weights initialized with He-style scaling
 * Bias initialized to zero
 ---
-### 3.1 Forward Pass
+### 4.2 Forward Pass
 example code:
 ```python
 X = [[1.0, 2.0],
@@ -101,7 +256,7 @@ out = layer.forward(X)
 
 ---
 
-### 3.2 Backward Pass
+### 4.3 Backward Pass
 example code:
 ```python
 grad_out = [[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]
@@ -112,21 +267,25 @@ Computes:
 * gradients for weights and bias,
 * gradients propagated to previous layer.
 ---
-### 3.3 Parameter Update
+### 4.4 Parameter Update
 Uses standard gradient descent.
 example code:
 ```python
 layer.update(lr=0.01)
 ```
 ---
-## 4. Activation Layer
-### 4.1 Definition
+## 5. Activation Layer
+### 5.1 Definition
 Layer **non-linearity** into the network.
 Supported activations:
 * `relu`
 * `sigmoid`
 * `tanh`
+* `softmax`
+* `leaky_relu`
+* `linear`
 
+### 5.2 Forward pass
 example code:
 ```python
 from model import Activation
@@ -134,20 +293,20 @@ act = Activation("relu")
 y = act.forward(x)
 ```
 ---
-### 4.2 Backward Pass
+### 5.3 Backward Pass
 example code:
 ```python
 grad_in = act.backward(grad_out)
 ```
 ---
 
-## 5. Dropout
-### 5.1 Definition
+## 6. Dropout
+### 6.1 Definition
 `Dropout` applies **random neuron masking** during training to reduce overfitting.
 
 ---
 
-### 5.2 Forward Pass
+### 6.2 Forward Pass
 Each neuron is randomly set to zero with probability `rate`.
 example code:
 ```python
@@ -165,7 +324,7 @@ then no masking is applied.
 
 ---
 
-### 5.3 Backward Pass
+### 6.3 Backward Pass
 
 ```python
 grad_in = drop.backward(grad_out)
@@ -175,8 +334,8 @@ Gradients are masked in the same pattern.
 
 ---
 
-## 6. CustomAIModel
-### 6.1 Definition
+## 7. CustomAIModel
+### 7.1 Definition
 The `CustomAIModel` function is created and used to create AImodels. 
 
 CustomAIModel has several functions:
@@ -188,18 +347,10 @@ CustomAIModel has several functions:
 - zero_grad
 - step
 
-available losses are only "mse", "cross_entropy", "softmax_cross_entropy"(coming soon)
+available losses are only "mse", "cross_entropy", "softmax_cross_entropy"
+
 ---
-### 6.2 add(will be replaced) - connect
-The `add` function is used to create layers.
-
-Example code:
-```python
-from dearning import CustomAIModel, Dense
-model = CustomAIModel()
-model.add(Dense(2, 1))
-```
-
+### 7.2 connect
 `connect` is the same function as add but can graph 
 
 example code:
@@ -207,21 +358,22 @@ example code:
 from dearning import CustomAIModel, Dense
 model = CustomAIModel() 
 inp=[[1.0,0.6],[0.9,1.2]]
-model.connect(Dense(2,1),inp) 
+model.connect(Dense(2,1),inp)
+``` 
 ---
-### 6.3 forward
+### 7.3 forward
 example code:
 ```python
 y_pred = model.forward(X)
 ```
 ---
-### 6.4 backward
+### 7.4 backward
 example code:
 ```python
 model.backward(grad)
 ```
 ---
-### 6.5 seed
+### 7.5 seed
 seed is a function to set the random seed.
 
 example code:
@@ -231,13 +383,13 @@ model = CustomAIModel(loss="mse")
 model.seed(42)
 ```
 ---
-### 6.6 zero_grad
+### 7.6 zero_grad
 example code:
 ```python
 model.zero_grad()
 ```
 ---
-### 6.7 steps
+### 7.7 steps
 The `step` function is used to update all model parameters using a certain learning rate.
 
 example code:
